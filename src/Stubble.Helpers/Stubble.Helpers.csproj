@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>7.3</LangVersion>
+    <PackageId>snipervld.Stubble.Helpers</PackageId>
     <Description>A method of adding handlebars style helpers to Stubble</Description>
     <PackageTags>template;mustache;text;generation;stubble</PackageTags>
     <RepositoryUrl>https://github.com/snipervld/Stubble.Helpers/</RepositoryUrl>
