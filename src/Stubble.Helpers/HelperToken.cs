@@ -3,7 +3,7 @@ using Stubble.Core.Tokens;
 
 namespace Stubble.Helpers
 {
-    public class HelperToken : InlineToken<HelperToken>, INonSpace
+    public class HelperToken : InlineToken<HelperToken>, INonSpace, IHelperCallInfo
     {
         public string Name { get; set; }
 
@@ -25,5 +25,7 @@ namespace Stubble.Helpers
         /// <returns></returns>
         public override int GetHashCode()
             => (Name, Args, TagStartPosition, TagEndPosition, ContentStartPosition, ContentEndPosition, Content, IsClosed).GetHashCode();
+
+        string IHelperCallInfo.Identifier => Name;
     }
 }

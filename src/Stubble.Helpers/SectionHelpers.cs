@@ -4,7 +4,7 @@ using System.Collections.Immutable;
 
 namespace Stubble.Helpers
 {
-    public class Helpers : BaseHelpers<Helpers, HelperContext>
+    public class SectionHelpers : BaseHelpers<SectionHelpers, HelperSectionContext>
     {
     }
 }

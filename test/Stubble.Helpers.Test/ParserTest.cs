@@ -17,6 +17,14 @@ namespace Stubble.Helpers.Test
             return builder.Build();
         }
 
+        public ParserPipeline BuildSectionHelperPipeline(SectionHelpers helpers)
+        {
+            var builder = new ParserPipelineBuilder();
+            builder.AddBefore<SectionTagParser>(new HelperSectionTokenParser(helpers.HelperMap));
+            builder.AddBefore<InvertedSectionParser>(new HelperInvertedSectionTokenParser(helpers.HelperMap));
+            return builder.Build();
+        }
+
         [Fact]
         public void ItDoesntParseUnregisteredHelpers()
         {
@@ -123,18 +131,6 @@ namespace Stubble.Helpers.Test
         }
 
         [Fact]
-        public void OnlyParsesHelperSectionsWithArguments()
-        {
-            var parser = new InstanceMustacheParser();
-            var pipeline = BuildHelperPipeline(new Helpers());
-
-            var tokens = parser.Parse("{{#MyHelper}}{{/MyHelper}}", pipeline: pipeline);
-
-            Assert.Single(tokens.Children);
-            Assert.IsType<SectionToken>(tokens.Children[0]);
-        }
-
-        [Fact]
         public void ItShouldBeAbleToParseStaticParameters()
         {
             var parser = new InstanceMustacheParser();
@@ -199,6 +195,136 @@ namespace Stubble.Helpers.Test
             Assert.Equal("MyHelper", helperToken.Name.ToString());
             Assert.Equal(argumentValue, helperToken.Args[0].Value);
             Assert.False(helperToken.Args[0].ShouldAttemptContextLoad);
+        }
+
+        [Fact]
+        public void ItParsesSectionHelpersWithoutArguments()
+        {
+            var parser = new InstanceMustacheParser();
+            var helpers =
+                new SectionHelpers()
+                    .Register("MyHelper", ctx => "Foo");
+            var pipeline = BuildSectionHelperPipeline(helpers);
+
+            var tokens = parser.Parse("{{#MyHelper}}test{{/MyHelper}}", pipeline: pipeline);
+
+            Assert.Single(tokens.Children);
+            Assert.IsType<HelperSectionToken>(tokens.Children[0]);
+        }
+
+        [Fact]
+        public void ItParsesSectionHelpersWithArgument()
+        {
+            var parser = new InstanceMustacheParser();
+            var helpers =
+                new SectionHelpers()
+                    .Register<int>("MyHelper", (ctx, arg) => "Foo");
+            var pipeline = BuildSectionHelperPipeline(helpers);
+
+            var tokens = parser.Parse("{{#MyHelper MyArgument}}test{{/MyHelper}}", pipeline: pipeline);
+
+            Assert.Single(tokens.Children);
+            var helperToken = Assert.IsType<HelperSectionToken>(tokens.Children[0]);
+            Assert.Equal("MyHelper", helperToken.SectionName.ToString());
+            Assert.Equal("MyArgument", helperToken.Args[0].Value);
+            Assert.Equal("test", helperToken.SectionContent.ToString());
+            Assert.True(helperToken.Args[0].ShouldAttemptContextLoad);
+        }
+
+        [Fact]
+        public void ItParsesSectionHelpersWithMultipleLookupArguments()
+        {
+            var parser = new InstanceMustacheParser();
+            var helpers =
+                new SectionHelpers()
+                    .Register<int, int>("MyHelper", (ctx, arg1, arg2) => "Foo");
+            var pipeline = BuildSectionHelperPipeline(helpers);
+
+            var tokens = parser.Parse("{{#MyHelper MyArgument1 MyArgument2}}test{{/MyHelper}}", pipeline: pipeline);
+
+            using (new AssertionScope())
+            {
+                var helperToken =
+                    tokens
+                        .Children
+                        .Should().ContainSingle().Which
+                        .Should().BeOfType<HelperSectionToken>().Which;
+
+                helperToken.Should().BeEquivalentTo(new
+                {
+                    SectionName = "MyHelper",
+                    Args = new[]
+                    {
+                        new { Value = "MyArgument1", ShouldAttemptContextLoad = true },
+                        new { Value = "MyArgument2", ShouldAttemptContextLoad = true },
+                    }
+                });
+            }
+        }
+
+        [Fact]
+        public void ItParsesInvertedSectionHelpersWithoutArguments()
+        {
+            var parser = new InstanceMustacheParser();
+            var helpers =
+                new SectionHelpers()
+                    .Register("MyHelper", ctx => "Foo");
+            var pipeline = BuildSectionHelperPipeline(helpers);
+
+            var tokens = parser.Parse("{{^MyHelper}}test{{/MyHelper}}", pipeline: pipeline);
+
+            Assert.Single(tokens.Children);
+            Assert.IsType<HelperInvertedSectionToken>(tokens.Children[0]);
+        }
+
+        [Fact]
+        public void ItParsesInvertedSectionHelpersWithArgument()
+        {
+            var parser = new InstanceMustacheParser();
+            var helpers =
+                new SectionHelpers()
+                    .Register<int>("MyHelper", (ctx, arg) => false);
+            var pipeline = BuildSectionHelperPipeline(helpers);
+
+            var tokens = parser.Parse("{{^MyHelper MyArgument}}test{{/MyHelper}}", pipeline: pipeline);
+
+            Assert.Single(tokens.Children);
+            var helperToken = Assert.IsType<HelperInvertedSectionToken>(tokens.Children[0]);
+            Assert.Equal("MyHelper", helperToken.SectionName.ToString());
+            Assert.Equal("MyArgument", helperToken.Args[0].Value);
+            Assert.Equal("test", helperToken.SectionContent.ToString());
+            Assert.True(helperToken.Args[0].ShouldAttemptContextLoad);
+        }
+
+        [Fact]
+        public void ItParsesInvertedSectionHelpersWithMultipleLookupArguments()
+        {
+            var parser = new InstanceMustacheParser();
+            var helpers =
+                new SectionHelpers()
+                    .Register<int, int>("MyHelper", (ctx, arg1, arg2) => "Foo");
+            var pipeline = BuildSectionHelperPipeline(helpers);
+
+            var tokens = parser.Parse("{{^MyHelper MyArgument1 MyArgument2}}test{{/MyHelper}}", pipeline: pipeline);
+
+            using (new AssertionScope())
+            {
+                var helperToken =
+                    tokens
+                        .Children
+                        .Should().ContainSingle().Which
+                        .Should().BeOfType<HelperInvertedSectionToken>().Which;
+
+                helperToken.Should().BeEquivalentTo(new
+                {
+                    SectionName = "MyHelper",
+                    Args = new[]
+                    {
+                        new { Value = "MyArgument1", ShouldAttemptContextLoad = true },
+                        new { Value = "MyArgument2", ShouldAttemptContextLoad = true },
+                    }
+                });
+            }
         }
     }
 }

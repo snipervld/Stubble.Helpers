@@ -328,5 +328,112 @@ namespace Stubble.Helpers.Test
 
             Assert.Equal("Name: John Smith", result);
         }
+
+        [Fact]
+        public void RegisteredSectionHelpersShouldBeRun()
+        {
+            var helpers = new SectionHelpers()
+                .Register("RenderInnerContent", (context) =>
+                {
+                    return true;
+                });
+
+            var builder = new StubbleBuilder()
+                .Configure(conf =>
+                {
+                    conf.AddSectionHelpers(helpers);
+                })
+                .Build();
+
+            var tmpl = @"{{#RenderInnerContent}}Count 1 is {{Count}}{{/RenderInnerContent}}, {{#RenderInnerContent}}Count 2 is {{Count2}}{{/RenderInnerContent}}";
+
+            var res = builder.Render(tmpl, new { Count = 1, Count2 = 2 });
+
+            Assert.Equal("Count 1 is 1, Count 2 is 2", res);
+        }
+
+        [Fact]
+        public void ItShouldRenderSectionContentWhenHelperReturnsTrue()
+        {
+            var helpers = new SectionHelpers()
+                .Register("IfEquals", (HelperSectionContext context, int value1, int value2) => value1 == value2);
+
+            var renderer = new StubbleBuilder()
+                .Configure(conf => conf.AddSectionHelpers(helpers))
+                .Build();
+
+            var result = renderer.Render(@"{{#IfEquals '5' '5'}}5 equals to 5{{/IfEquals}}
+{{#IfEquals NumberFive '5'}}{{NumberFive}} equals to 5{{/IfEquals}}
+{{#IfEquals NumberSix '5'}}{{NumberSix}} don't equal to 5{{/IfEquals}}", new
+            {
+                NumberFive = 5,
+                NumberSix = 6,
+            });
+
+            Assert.Equal(@"5 equals to 5
+5 equals to 5
+", result);
+        }
+
+        [Fact]
+        public void ItShouldRenderTextWhenSectionHelperReturnsString()
+        {
+            var helpers = new SectionHelpers()
+                .Register("RenderAnotherTemplate", (HelperSectionContext context) => "another template");
+
+            var renderer = new StubbleBuilder()
+                .Configure(conf => conf.AddSectionHelpers(helpers))
+                .Build();
+
+            var result = renderer.Render("{{#RenderAnotherTemplate}}template{{/RenderAnotherTemplate}}", null);
+
+            Assert.Equal("another template", result);
+        }
+
+        [Fact]
+        public void RegisteredInvertedSectionHelpersShouldBeRun()
+        {
+            var helpers = new SectionHelpers()
+                .Register<int>("False", (context, count) =>
+                {
+                    return false;
+                });
+
+            var builder = new StubbleBuilder()
+                .Configure(conf =>
+                {
+                    conf.AddSectionHelpers(helpers);
+                })
+                .Build();
+
+            var tmpl = @"{{^False Count}}Count 1 is {{Count}}{{/False}}";
+
+            var res = builder.Render(tmpl, new { Count = 1 });
+
+            Assert.Equal("Count 1 is 1", res);
+        }
+
+        [Fact]
+        public void ItShouldRenderInvertedSectionContentWhenHelperReturnsNonTruthyValue()
+        {
+            var helpers = new SectionHelpers()
+                .Register("IfEquals", (HelperSectionContext context, int value1, int value2) => value1 == value2);
+
+            var renderer = new StubbleBuilder()
+                .Configure(conf => conf.AddSectionHelpers(helpers))
+                .Build();
+
+            var result = renderer.Render(@"{{^IfEquals '5' '6'}}5 don't equal to 6{{/IfEquals}}
+{{^IfEquals NumberSix '5'}}{{NumberSix}} don't equal to 5{{/IfEquals}}
+{{^IfEquals NumberFive '5'}}{{NumberFive}} equals to 5{{/IfEquals}}", new
+            {
+                NumberSix = 6,
+                NumberFive = 5,
+            });
+
+            Assert.Equal(@"5 don't equal to 6
+6 don't equal to 5
+", result);
+        }
     }
 }

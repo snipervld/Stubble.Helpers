@@ -37,6 +37,15 @@ namespace Stubble.Helpers
         public T Lookup<T>(string name)
             => (T)_context.Lookup(name);
 
+        /// <summary>
+        /// Looks up a value by name from the context
+        /// </summary>
+        /// <param name="name">The name of the value to lookup</param>
+        /// <exception cref="StubbleDataMissException">If ThrowOnDataMiss set then thrown on value not found</exception>
+        /// <returns>The value if found or null if not</returns>
+        public object Lookup(string name)
+            => _context.Lookup(name);
+
         public bool IsTruthyValue(object value)
             => _context.IsTruthyValue(value);
     }

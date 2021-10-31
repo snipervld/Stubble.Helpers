@@ -7,17 +7,30 @@ To get started with helpers, include the package from nuget and register your he
 var culture = new CultureInfo("en-GB");
 var helpers = new Helpers()
     .Register("FormatCurrency", (HelperContext context, decimal count) => count.ToString("C", culture));
+var sectionHelpers = new SectionHelpers()
+    .Register("IfEqualsTo5", (HelperSectionContext context, decimal count) => count == 5);
 
 var stubble = new StubbleBuilder()
-    .Configure(conf => conf.AddHelpers(helpers))
+    .Configure(conf =>
+        conf
+            .AddHelpers(helpers)
+            .AddSectionHelpers(sectionHelpers))
     .Build();
 
 var result = stubble.Render("{{FormatCurrency Count}}", new { Count = 100.26m });
 
 Assert.Equal("£100.26", result);
+
+result = stubble.Render("{{#IfEqualsTo5 Count}}{{Count}} equals to 5{{/IfEqualsTo5}}", new { Count = 5 });
+
+Assert.Equal("5 equals to 5", result);
+
+result = stubble.Render("{{^IfEqualsTo5 Count}}{{Count}} doesn't equal to 5{{/IfEqualsTo5}}", new { Count = 6 });
+
+Assert.Equal("6 doesn't equal to 5", result);
 ```
 
-For more advanced cases you can use the `HelperContext` to get access to values in your current context in a strongly typed manner like the following:
+For more advanced cases you can use the `HelperContext` or the `HelperSectionContext` to get access to values in your current context in a strongly typed manner like the following:
 ```csharp
 var helpers = new Helpers()
     .Register("PrintListWithComma", (context) => string.Join(", ", context.Lookup<int[]>("List")));
