@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using Stubble.Helpers.Utils;
 
-namespace Stubble.Helpers
+namespace Stubble.Helpers.Classes
 {
     public readonly struct HelperRef : IEquatable<HelperRef>
     {
@@ -31,7 +32,7 @@ namespace Stubble.Helpers
         public bool Equals(HelperRef other)
         {
             return EqualityComparer<Delegate>.Default.Equals(Delegate, other.Delegate) &&
-                   CompareHelper.CompareImmutableArrays(ArgumentTypes, other.ArgumentTypes);
+                   CompareUtils.CompareImmutableArrays(ArgumentTypes, other.ArgumentTypes);
         }
 
         public override int GetHashCode()

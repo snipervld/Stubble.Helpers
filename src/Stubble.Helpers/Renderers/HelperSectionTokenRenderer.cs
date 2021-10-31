@@ -5,8 +5,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Stubble.Core.Contexts;
 using Stubble.Core.Renderers.StringRenderer;
+using Stubble.Helpers.Classes;
+using Stubble.Helpers.Contexts;
+using Stubble.Helpers.Tokens;
+using Stubble.Helpers.Utils;
 
-namespace Stubble.Helpers
+namespace Stubble.Helpers.Renderers
 {
     public class HelperSectionTokenRenderer : StringObjectRenderer<HelperSectionToken>
     {

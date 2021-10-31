@@ -1,10 +1,12 @@
 ﻿using System.Collections.Immutable;
 using Stubble.Core.Imported;
 using Stubble.Core.Tokens;
+using Stubble.Helpers.Classes;
+using Stubble.Helpers.Utils;
 
-namespace Stubble.Helpers
+namespace Stubble.Helpers.Tokens
 {
-    public class HelperSectionToken : BlockToken<HelperSectionToken>, INonSpace, IHelperCallInfo
+    public class HelperInvertedSectionToken : BlockToken<HelperInvertedSectionToken>, INonSpace, IHelperCallInfo
     {
         /// <summary>
         /// Gets or sets the starting position of the tag
@@ -35,7 +37,7 @@ namespace Stubble.Helpers
         /// </summary>
         /// <param name="other">The other section tag</param>
         /// <returns>If the section tags are equal</returns>
-        public override bool Equals(HelperSectionToken other)
+        public override bool Equals(HelperInvertedSectionToken other)
         {
             if (other == null)
             {
@@ -67,7 +69,7 @@ namespace Stubble.Helpers
                     && other.SectionName == SectionName
                     && other.StartPosition == StartPosition
                     && other.EndPosition == EndPosition
-                    && CompareHelper.CompareImmutableArraysWithEquatable(Args, other.Args);
+                    && CompareUtils.CompareImmutableArraysWithEquatable(Args, other.Args);
         }
 
         /// <summary>
@@ -77,7 +79,7 @@ namespace Stubble.Helpers
         /// <returns>If the object is equal to this tag</returns>
         public override bool Equals(object obj)
         {
-            return obj is HelperSectionToken a && Equals(a);
+            return obj is HelperInvertedSectionToken a && Equals(a);
         }
 
         /// <summary>

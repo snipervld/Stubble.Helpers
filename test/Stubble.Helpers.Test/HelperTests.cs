@@ -3,6 +3,8 @@ using System.Globalization;
 using System.Linq;
 using McMaster.Extensions.Xunit;
 using Stubble.Core.Builders;
+using Stubble.Helpers.Builders;
+using Stubble.Helpers.Contexts;
 using Xunit;
 
 namespace Stubble.Helpers.Test
@@ -14,7 +16,7 @@ namespace Stubble.Helpers.Test
         public void RegisteredHelpersShouldBeRun()
         {
             var culture = new CultureInfo("en-GB");
-            var helpers = new Helpers()
+            var helpers = new HelpersBuilder()
                 .Register<decimal>("FormatCurrency", (context, count) =>
                 {
                     return count.ToString("C", culture);
@@ -37,7 +39,7 @@ namespace Stubble.Helpers.Test
         [Fact]
         public void HelpersShouldBeAbleToUseRendererContext()
         {
-            var helpers = new Helpers()
+            var helpers = new HelpersBuilder()
                 .Register<decimal>("FormatCurrency", (context, count) =>
                 {
                     return count.ToString("C", context.RenderSettings.CultureInfo);
@@ -65,7 +67,7 @@ namespace Stubble.Helpers.Test
         public void StubbleShouldContinueWorkingAsNormal()
         {
             var culture = new CultureInfo("en-GB");
-            var helpers = new Helpers()
+            var helpers = new HelpersBuilder()
                 .Register<decimal>("FormatCurrency", (context, count) =>
                 {
                     return count.ToString("C", culture);
@@ -90,7 +92,7 @@ namespace Stubble.Helpers.Test
         public void StubbleShouldContinueWorkingAsNormalWithWhitespace()
         {
             var culture = new CultureInfo("en-GB");
-            var helpers = new Helpers()
+            var helpers = new HelpersBuilder()
                 .Register<decimal>("FormatCurrency", (context, count) =>
                 {
                     return count.ToString("C", culture);
@@ -113,7 +115,7 @@ namespace Stubble.Helpers.Test
         [Fact]
         public void HelpersShouldBeAbleToUseContextLookup()
         {
-            var helpers = new Helpers()
+            var helpers = new HelpersBuilder()
                 .Register<int>("PrintWithComma", (context, count) =>
                 {
                     var arr = context.Lookup<int[]>("List");
@@ -146,7 +148,7 @@ namespace Stubble.Helpers.Test
         public void HelpersShouldBeAbleToHaveOnlyStaticParameters()
         {
             var culture = new CultureInfo("en-GB");
-            var helpers = new Helpers()
+            var helpers = new HelpersBuilder()
                 .Register<decimal>("FormatCurrency", (context, count) =>
                 {
                     return count.ToString("C", culture);
@@ -169,7 +171,7 @@ namespace Stubble.Helpers.Test
         [Fact]
         public void HelpersShouldBeAbleToHaveStaticAndDynamicParameters()
         {
-            var helpers = new Helpers()
+            var helpers = new HelpersBuilder()
                 .Register<decimal, decimal>("Multiply", (context, count, multiplier) =>
                 {
                     return $"{count * multiplier}";
@@ -192,7 +194,7 @@ namespace Stubble.Helpers.Test
         [Fact]
         public void HelpersShouldBeAbleToHaveStaticParameterWithSpaces()
         {
-            var helpers = new Helpers()
+            var helpers = new HelpersBuilder()
                 .Register<string, string>("DefaultMe", (context, str, @default) =>
                 {
                     return string.IsNullOrEmpty(str) ? @default : str;
@@ -215,7 +217,7 @@ namespace Stubble.Helpers.Test
         [Fact]
         public void HelpersShouldBeAbleToHaveStaticParameterWithEscapedQuotes()
         {
-            var helpers = new Helpers()
+            var helpers = new HelpersBuilder()
                 .Register<string, string>("DefaultMe", (context, str, @default) =>
                 {
                     return string.IsNullOrEmpty(str) ? @default : str;
@@ -240,7 +242,7 @@ namespace Stubble.Helpers.Test
         [InlineData("\"Count\"")]
         public void ItShouldCallHelperWhenExistsStaticAndDynamicVariable(string staticValue)
         {
-            var helpers = new Helpers()
+            var helpers = new HelpersBuilder()
                 .Register<string, int>("MyHelper", (context, staticVariable, dynamicVariable) =>
                 {
                     return $"<{staticVariable}#{dynamicVariable}>";
@@ -263,7 +265,7 @@ namespace Stubble.Helpers.Test
         [Fact]
         public void ItShouldAllowRegisteredHelpersWithoutArguments()
         {
-            var helpers = new Helpers()
+            var helpers = new HelpersBuilder()
                 .Register("PrintListWithComma", (context) => string.Join(", ", context.Lookup<int[]>("List")));
 
             var builder = new StubbleBuilder()
@@ -278,7 +280,7 @@ namespace Stubble.Helpers.Test
         [Fact]
         public void ItShouldNotRenderHelperWithMissingLookedUpArgumentThatIsntValueType()
         {
-            var helpers = new Helpers()
+            var helpers = new HelpersBuilder()
                 .Register<string>("ToCapitalLetters", (context, arg) => arg.ToUpperInvariant());
 
             var renderer = new StubbleBuilder()
@@ -296,7 +298,7 @@ namespace Stubble.Helpers.Test
         [Fact]
         public void ItShouldRenderHelperWithConstantQuotedStringArgument()
         {
-            var helpers = new Helpers()
+            var helpers = new HelpersBuilder()
                 .Register<string>("ToCapitalLetters", (context, arg) => arg.ToUpperInvariant());
 
             var renderer = new StubbleBuilder()
@@ -314,7 +316,7 @@ namespace Stubble.Helpers.Test
         [Fact]
         public void ItShouldRenderHelperWithTwoConstantArguments()
         {
-            var helpers = new Helpers()
+            var helpers = new HelpersBuilder()
                 .Register("ReplaceString", (HelperContext context, string searchString, string oldString, string newString) => searchString?.Replace(oldString, newString, StringComparison.InvariantCulture));
 
             var renderer = new StubbleBuilder()
@@ -332,7 +334,7 @@ namespace Stubble.Helpers.Test
         [Fact]
         public void RegisteredSectionHelpersShouldBeRun()
         {
-            var helpers = new SectionHelpers()
+            var helpers = new SectionHelpersBuilder()
                 .Register("RenderInnerContent", (context) =>
                 {
                     return true;
@@ -355,7 +357,7 @@ namespace Stubble.Helpers.Test
         [Fact]
         public void ItShouldRenderSectionContentWhenHelperReturnsTrue()
         {
-            var helpers = new SectionHelpers()
+            var helpers = new SectionHelpersBuilder()
                 .Register("IfEquals", (HelperSectionContext context, int value1, int value2) => value1 == value2);
 
             var renderer = new StubbleBuilder()
@@ -378,7 +380,7 @@ namespace Stubble.Helpers.Test
         [Fact]
         public void ItShouldRenderTextWhenSectionHelperReturnsString()
         {
-            var helpers = new SectionHelpers()
+            var helpers = new SectionHelpersBuilder()
                 .Register("RenderAnotherTemplate", (HelperSectionContext context) => "another template");
 
             var renderer = new StubbleBuilder()
@@ -393,7 +395,7 @@ namespace Stubble.Helpers.Test
         [Fact]
         public void RegisteredInvertedSectionHelpersShouldBeRun()
         {
-            var helpers = new SectionHelpers()
+            var helpers = new SectionHelpersBuilder()
                 .Register<int>("False", (context, count) =>
                 {
                     return false;
@@ -416,7 +418,7 @@ namespace Stubble.Helpers.Test
         [Fact]
         public void ItShouldRenderInvertedSectionContentWhenHelperReturnsNonTruthyValue()
         {
-            var helpers = new SectionHelpers()
+            var helpers = new SectionHelpersBuilder()
                 .Register("IfEquals", (HelperSectionContext context, int value1, int value2) => value1 == value2);
 
             var renderer = new StubbleBuilder()

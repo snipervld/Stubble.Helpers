@@ -2,10 +2,11 @@
 using System.Text.RegularExpressions;
 using Stubble.Core.Exceptions;
 using Stubble.Core.Imported;
+using Stubble.Helpers.Classes;
 
-namespace Stubble.Helpers
+namespace Stubble.Helpers.Utils
 {
-    internal static class ParserHelper
+    internal static class ParserUtils
     {
         public static ImmutableArray<HelperArgument> ParseArguments(StringSlice slice)
         {

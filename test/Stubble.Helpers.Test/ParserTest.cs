@@ -4,20 +4,23 @@ using Stubble.Core.Builders;
 using Stubble.Core.Parser;
 using Stubble.Core.Parser.TokenParsers;
 using Stubble.Core.Tokens;
+using Stubble.Helpers.Builders;
+using Stubble.Helpers.Parsers;
+using Stubble.Helpers.Tokens;
 using Xunit;
 
 namespace Stubble.Helpers.Test
 {
     public class ParserTest
     {
-        public ParserPipeline BuildHelperPipeline(Helpers helpers)
+        public ParserPipeline BuildHelperPipeline(HelpersBuilder helpers)
         {
             var builder = new ParserPipelineBuilder();
-            builder.AddBefore<InterpolationTagParser>(new HelperTagParser(helpers.HelperMap));
+            builder.AddBefore<InterpolationTagParser>(new HelperTokenParser(helpers.HelperMap));
             return builder.Build();
         }
 
-        public ParserPipeline BuildSectionHelperPipeline(SectionHelpers helpers)
+        public ParserPipeline BuildSectionHelperPipeline(SectionHelpersBuilder helpers)
         {
             var builder = new ParserPipelineBuilder();
             builder.AddBefore<SectionTagParser>(new HelperSectionTokenParser(helpers.HelperMap));
@@ -29,7 +32,7 @@ namespace Stubble.Helpers.Test
         public void ItDoesntParseUnregisteredHelpers()
         {
             var parser = new InstanceMustacheParser();
-            var helpers = new Helpers()
+            var helpers = new HelpersBuilder()
                 .Register("MyHelper", ctx => "Foo");
             var pipeline = BuildHelperPipeline(helpers);
 
@@ -43,7 +46,7 @@ namespace Stubble.Helpers.Test
         public void ItParsesHelpersWithoutArguments()
         {
             var parser = new InstanceMustacheParser();
-            var helpers = new Helpers()
+            var helpers = new HelpersBuilder()
                 .Register("MyHelper", ctx => "Foo");
             var pipeline = BuildHelperPipeline(helpers);
 
@@ -57,7 +60,7 @@ namespace Stubble.Helpers.Test
         public void ItParsesHelpersWithArgument()
         {
             var parser = new InstanceMustacheParser();
-            var helpers = new Helpers()
+            var helpers = new HelpersBuilder()
                 .Register<int>("MyHelper", (ctx, arg) => "Foo");
             var pipeline = BuildHelperPipeline(helpers);
 
@@ -74,7 +77,7 @@ namespace Stubble.Helpers.Test
         public void ItParsesHelpersWithMultipleLookupArguments()
         {
             var parser = new InstanceMustacheParser();
-            var helpers = new Helpers()
+            var helpers = new HelpersBuilder()
                 .Register<int, int>("MyHelper", (ctx, arg1, arg2) => "Foo");
             var pipeline = BuildHelperPipeline(helpers);
 
@@ -106,7 +109,7 @@ namespace Stubble.Helpers.Test
         public void ItParsesHelpersWithMultipleStaticArguments(string arg1, string arg1Value, string arg2, string arg2Value )
         {
             var parser = new InstanceMustacheParser();
-            var helpers = new Helpers()
+            var helpers = new HelpersBuilder()
                 .Register<string, string>("MyHelper", (ctx, arg1x, arg2x) => "Foo");
             var pipeline = BuildHelperPipeline(helpers);
 
@@ -134,7 +137,7 @@ namespace Stubble.Helpers.Test
         public void ItShouldBeAbleToParseStaticParameters()
         {
             var parser = new InstanceMustacheParser();
-            var helpers = new Helpers()
+            var helpers = new HelpersBuilder()
                 .Register<int, int>("MyHelper", (ctx, arg1, arg2) => "Foo");
             var pipeline = BuildHelperPipeline(helpers);
 
@@ -160,7 +163,7 @@ namespace Stubble.Helpers.Test
                 .Replace("\'", string.Empty);
 
             var parser = new InstanceMustacheParser();
-            var helpers = new Helpers()
+            var helpers = new HelpersBuilder()
                 .Register<string>("MyHelper", (ctx, arg) => "Foo");
             var pipeline = BuildHelperPipeline(helpers);
 
@@ -184,7 +187,7 @@ namespace Stubble.Helpers.Test
                 .Replace("\'", string.Empty);
 
             var parser = new InstanceMustacheParser();
-            var helpers = new Helpers()
+            var helpers = new HelpersBuilder()
                 .Register<string>("MyHelper", (ctx, arg) => "Foo");
             var pipeline = BuildHelperPipeline(helpers);
 
@@ -202,7 +205,7 @@ namespace Stubble.Helpers.Test
         {
             var parser = new InstanceMustacheParser();
             var helpers =
-                new SectionHelpers()
+                new SectionHelpersBuilder()
                     .Register("MyHelper", ctx => "Foo");
             var pipeline = BuildSectionHelperPipeline(helpers);
 
@@ -217,7 +220,7 @@ namespace Stubble.Helpers.Test
         {
             var parser = new InstanceMustacheParser();
             var helpers =
-                new SectionHelpers()
+                new SectionHelpersBuilder()
                     .Register<int>("MyHelper", (ctx, arg) => "Foo");
             var pipeline = BuildSectionHelperPipeline(helpers);
 
@@ -236,7 +239,7 @@ namespace Stubble.Helpers.Test
         {
             var parser = new InstanceMustacheParser();
             var helpers =
-                new SectionHelpers()
+                new SectionHelpersBuilder()
                     .Register<int, int>("MyHelper", (ctx, arg1, arg2) => "Foo");
             var pipeline = BuildSectionHelperPipeline(helpers);
 
@@ -267,7 +270,7 @@ namespace Stubble.Helpers.Test
         {
             var parser = new InstanceMustacheParser();
             var helpers =
-                new SectionHelpers()
+                new SectionHelpersBuilder()
                     .Register("MyHelper", ctx => "Foo");
             var pipeline = BuildSectionHelperPipeline(helpers);
 
@@ -282,7 +285,7 @@ namespace Stubble.Helpers.Test
         {
             var parser = new InstanceMustacheParser();
             var helpers =
-                new SectionHelpers()
+                new SectionHelpersBuilder()
                     .Register<int>("MyHelper", (ctx, arg) => false);
             var pipeline = BuildSectionHelperPipeline(helpers);
 
@@ -301,7 +304,7 @@ namespace Stubble.Helpers.Test
         {
             var parser = new InstanceMustacheParser();
             var helpers =
-                new SectionHelpers()
+                new SectionHelpersBuilder()
                     .Register<int, int>("MyHelper", (ctx, arg1, arg2) => "Foo");
             var pipeline = BuildSectionHelperPipeline(helpers);
 

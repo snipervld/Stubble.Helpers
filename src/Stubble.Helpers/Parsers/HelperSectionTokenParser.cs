@@ -5,15 +5,18 @@ using Stubble.Core.Imported;
 using Stubble.Core.Parser;
 using Stubble.Core.Parser.Interfaces;
 using Stubble.Core.Tokens;
+using Stubble.Helpers.Classes;
+using Stubble.Helpers.Tokens;
+using Stubble.Helpers.Utils;
 
-namespace Stubble.Helpers
+namespace Stubble.Helpers.Parsers
 {
-    public class HelperInvertedSectionTokenParser : BlockParser
+    public class HelperSectionTokenParser : BlockParser
     {
-        private const char OpeningTagDelimiter = '^';
+        private const char OpeningTagDelimiter = '#';
         private readonly ImmutableDictionary<string, HelperRef> _helperMap;
 
-        public HelperInvertedSectionTokenParser(ImmutableDictionary<string, HelperRef> helperMap)
+        public HelperSectionTokenParser(ImmutableDictionary<string, HelperRef> helperMap)
         {
             _helperMap = helperMap;
         }
@@ -78,7 +81,7 @@ namespace Stubble.Helpers
                     var args = new StringSlice(slice.Text, argsStart, slice.Start - 1);
                     args.TrimEnd();
 
-                    argsList = ParserHelper.ParseArguments(new StringSlice(args.Text, args.Start, args.End));
+                    argsList = ParserUtils.ParseArguments(new StringSlice(args.Text, args.Start, args.End));
                 }
                 else
                 {
@@ -95,7 +98,7 @@ namespace Stubble.Helpers
 
                 var contentStartPosition = slice.Start + processor.CurrentTags.EndTag.Length;
 
-                var sectionTag = new HelperInvertedSectionToken
+                var sectionTag = new HelperSectionToken
                 {
                     SectionName = sectionName,
                     Args = argsList,
@@ -121,7 +124,7 @@ namespace Stubble.Helpers
                 throw new System.ArgumentNullException(nameof(processor));
             }
 
-            if (token is HelperInvertedSectionToken sectionTag && closeToken is SectionEndToken sectionEndTag)
+            if (token is HelperSectionToken sectionTag && closeToken is SectionEndToken sectionEndTag)
             {
                 if (sectionTag.SectionName == sectionEndTag.SectionName)
                 {
@@ -141,13 +144,13 @@ namespace Stubble.Helpers
                 throw new System.ArgumentNullException(nameof(processor));
             }
 
-            if (!(token is HelperInvertedSectionToken sectionTag))
+            if (!(token is HelperSectionToken sectionTag))
             {
-#pragma warning disable CA2208
 #pragma warning disable CA1303
+#pragma warning disable CA2208
                 throw new System.ArgumentException(nameof(token));
-#pragma warning restore CA1303
 #pragma warning restore CA2208
+#pragma warning restore CA1303
             }
 
             while (slice.CurrentChar.IsWhitespace())

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Immutable;
+using Stubble.Helpers.Classes;
 
-namespace Stubble.Helpers
+namespace Stubble.Helpers.Tokens
 {
     internal interface IHelperCallInfo
     {

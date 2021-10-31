@@ -7,6 +7,10 @@ using System.Linq;
 using Stubble.Core.Contexts;
 using Stubble.Core.Renderers.StringRenderer;
 using Stubble.Core.Settings;
+using Stubble.Helpers.Classes;
+using Stubble.Helpers.Contexts;
+using Stubble.Helpers.Renderers;
+using Stubble.Helpers.Tokens;
 using Xunit;
 
 namespace Stubble.Helpers.Test
@@ -23,7 +27,7 @@ namespace Stubble.Helpers.Test
 
             var helpers = ImmutableDictionary.Create<string, HelperRef>();
 
-            var tagRenderer = new HelperTagRenderer(helpers);
+            var tagRenderer = new HelperTokenRenderer(helpers);
 
             var token = new HelperToken
             {
@@ -57,7 +61,7 @@ namespace Stubble.Helpers.Test
 
             helpers.Add("MyHelper", new HelperRef(helper));
 
-            var tagRenderer = new HelperTagRenderer(helpers.ToImmutable());
+            var tagRenderer = new HelperTokenRenderer(helpers.ToImmutable());
 
             var token = new HelperToken
             {
@@ -91,7 +95,7 @@ namespace Stubble.Helpers.Test
 
             helpers.Add("MyHelper", new HelperRef(helper));
 
-            var tagRenderer = new HelperTagRenderer(helpers.ToImmutable());
+            var tagRenderer = new HelperTokenRenderer(helpers.ToImmutable());
 
             var token = new HelperToken
             {
@@ -126,7 +130,7 @@ namespace Stubble.Helpers.Test
 
             helpers.Add("MyHelper", new HelperRef(helper));
 
-            var tagRenderer = new HelperTagRenderer(helpers.ToImmutable());
+            var tagRenderer = new HelperTokenRenderer(helpers.ToImmutable());
 
             var token = new HelperToken
             {
@@ -161,7 +165,7 @@ namespace Stubble.Helpers.Test
 
             helpers.Add("MyHelper", new HelperRef(helper));
 
-            var tagRenderer = new HelperTagRenderer(helpers.ToImmutable());
+            var tagRenderer = new HelperTokenRenderer(helpers.ToImmutable());
 
             var token = new HelperToken
             {
@@ -195,7 +199,7 @@ namespace Stubble.Helpers.Test
 
             helpers.Add("MyHelper", new HelperRef(helper));
 
-            var tagRenderer = new HelperTagRenderer(helpers.ToImmutable());
+            var tagRenderer = new HelperTokenRenderer(helpers.ToImmutable());
 
             var token = new HelperToken
             {
@@ -229,7 +233,7 @@ namespace Stubble.Helpers.Test
 
             helpers.Add("MyHelper", new HelperRef(helper));
 
-            var tagRenderer = new HelperTagRenderer(helpers.ToImmutable());
+            var tagRenderer = new HelperTokenRenderer(helpers.ToImmutable());
 
             var token = new HelperToken
             {
@@ -267,7 +271,7 @@ namespace Stubble.Helpers.Test
 
             helpers.Add("MyHelper", new HelperRef(helper));
 
-            var tagRenderer = new HelperTagRenderer(helpers.ToImmutable());
+            var tagRenderer = new HelperTokenRenderer(helpers.ToImmutable());
 
             var token = new HelperToken
             {
@@ -301,7 +305,7 @@ namespace Stubble.Helpers.Test
 
             helpers.Add("MyHelper", new HelperRef(helper));
 
-            var tagRenderer = new HelperTagRenderer(helpers.ToImmutable());
+            var tagRenderer = new HelperTokenRenderer(helpers.ToImmutable());
 
             var token = new HelperToken
             {
@@ -338,7 +342,7 @@ namespace Stubble.Helpers.Test
 
             helpers.Add("MyHelper", new HelperRef(helper));
 
-            var tagRenderer = new HelperTagRenderer(helpers.ToImmutable());
+            var tagRenderer = new HelperTokenRenderer(helpers.ToImmutable());
 
             var token = new HelperToken
             {
@@ -372,7 +376,7 @@ namespace Stubble.Helpers.Test
 
             helpers.Add("MyHelper", new HelperRef(helper));
 
-            var tagRenderer = new HelperTagRenderer(helpers.ToImmutable());
+            var tagRenderer = new HelperTokenRenderer(helpers.ToImmutable());
 
             var token = new HelperToken
             {

@@ -1,51 +1,51 @@
 ﻿using Stubble.Core.Parser.TokenParsers;
-using Stubble.Core.Renderers.StringRenderer;
 using Stubble.Core.Settings;
+using Stubble.Helpers.Builders;
+using Stubble.Helpers.Parsers;
+using Stubble.Helpers.Renderers;
 
 namespace Stubble.Helpers
 {
-    public delegate string HelperDelegate(StringRender renderer, HelperContext context);
-
     public static class HelperExtensions
     {
-        public static RendererSettingsBuilder AddHelpers(this RendererSettingsBuilder builder, Helpers helpers)
+        public static RendererSettingsBuilder AddHelpers(this RendererSettingsBuilder builder, HelpersBuilder helpersBuilder)
         {
             if (builder is null)
             {
                 throw new System.ArgumentNullException(nameof(builder));
             }
 
-            if (helpers is null)
+            if (helpersBuilder is null)
             {
-                throw new System.ArgumentNullException(nameof(helpers));
+                throw new System.ArgumentNullException(nameof(helpersBuilder));
             }
 
             builder.ConfigureParserPipeline(pipelineBuilder => pipelineBuilder
-                .AddBefore<InterpolationTagParser>(new HelperTagParser(helpers.HelperMap)));
+                .AddBefore<InterpolationTagParser>(new HelperTokenParser(helpersBuilder.HelperMap)));
 
-            builder.TokenRenderers.Add(new HelperTagRenderer(helpers.HelperMap));
+            builder.TokenRenderers.Add(new HelperTokenRenderer(helpersBuilder.HelperMap));
 
             return builder;
         }
 
-        public static RendererSettingsBuilder AddSectionHelpers(this RendererSettingsBuilder builder, SectionHelpers helpers)
+        public static RendererSettingsBuilder AddSectionHelpers(this RendererSettingsBuilder builder, SectionHelpersBuilder helpersBuilder)
         {
             if (builder is null)
             {
                 throw new System.ArgumentNullException(nameof(builder));
             }
 
-            if (helpers is null)
+            if (helpersBuilder is null)
             {
-                throw new System.ArgumentNullException(nameof(helpers));
+                throw new System.ArgumentNullException(nameof(helpersBuilder));
             }
 
             builder.ConfigureParserPipeline(pipelineBuilder => pipelineBuilder
-                .AddBefore<SectionTagParser>(new HelperSectionTokenParser(helpers.HelperMap))
-                .AddBefore<InvertedSectionParser>(new HelperInvertedSectionTokenParser(helpers.HelperMap)));
+                .AddBefore<SectionTagParser>(new HelperSectionTokenParser(helpersBuilder.HelperMap))
+                .AddBefore<InvertedSectionParser>(new HelperInvertedSectionTokenParser(helpersBuilder.HelperMap)));
 
-            builder.TokenRenderers.Add(new HelperSectionTokenRenderer(helpers.HelperMap));
-            builder.TokenRenderers.Add(new HelperInvertedSectionTokenRenderer(helpers.HelperMap));
+            builder.TokenRenderers.Add(new HelperSectionTokenRenderer(helpersBuilder.HelperMap));
+            builder.TokenRenderers.Add(new HelperInvertedSectionTokenRenderer(helpersBuilder.HelperMap));
 
             return builder;
         }

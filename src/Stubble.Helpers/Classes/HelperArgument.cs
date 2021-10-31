@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Stubble.Helpers
+namespace Stubble.Helpers.Classes
 {
     public readonly struct HelperArgument : IEquatable<HelperArgument>
     {

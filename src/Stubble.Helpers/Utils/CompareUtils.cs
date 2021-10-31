@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Immutable;
 
-namespace Stubble.Helpers
+namespace Stubble.Helpers.Utils
 {
-    internal static class CompareHelper
+    internal static class CompareUtils
     {
         internal static bool CompareImmutableArraysWithEquatable<T>(in ImmutableArray<T> arr1, in ImmutableArray<T> arr2)
             where T : IEquatable<T>

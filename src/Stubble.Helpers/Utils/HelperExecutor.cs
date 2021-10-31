@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Immutable;
 using System.Globalization;
+using Stubble.Helpers.Classes;
+using Stubble.Helpers.Contexts;
+using Stubble.Helpers.Tokens;
 
-namespace Stubble.Helpers
+namespace Stubble.Helpers.Utils
 {
     internal class HelperExecutor
     {

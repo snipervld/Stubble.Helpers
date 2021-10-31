@@ -1,7 +1,9 @@
 ﻿using System.Collections.Immutable;
 using Stubble.Core.Tokens;
+using Stubble.Helpers.Classes;
+using Stubble.Helpers.Utils;
 
-namespace Stubble.Helpers
+namespace Stubble.Helpers.Tokens
 {
     public class HelperToken : InlineToken<HelperToken>, INonSpace, IHelperCallInfo
     {
@@ -15,7 +17,7 @@ namespace Stubble.Helpers
                 == (TagStartPosition, TagEndPosition, ContentStartPosition, ContentEndPosition, IsClosed)
             && other.Content.Equals(Content)
             && other.Name.Equals(Name, System.StringComparison.OrdinalIgnoreCase)
-            && CompareHelper.CompareImmutableArraysWithEquatable(Args, other.Args);
+            && CompareUtils.CompareImmutableArraysWithEquatable(Args, other.Args);
 
         public override bool Equals(object obj)
             => obj is HelperToken a && Equals(a);

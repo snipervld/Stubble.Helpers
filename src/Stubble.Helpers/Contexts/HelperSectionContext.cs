@@ -1,6 +1,6 @@
 ﻿using Stubble.Core.Contexts;
 
-namespace Stubble.Helpers
+namespace Stubble.Helpers.Contexts
 {
     public class HelperSectionContext : HelperContext
     {

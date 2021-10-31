@@ -3,7 +3,7 @@ using Stubble.Core.Contexts;
 using Stubble.Core.Exceptions;
 using Stubble.Core.Settings;
 
-namespace Stubble.Helpers
+namespace Stubble.Helpers.Contexts
 {
     public class HelperContext
     {
@@ -11,10 +11,13 @@ namespace Stubble.Helpers
 
         public HelperContext(Context context)
         {
-            if (context is null) throw new ArgumentNullException(nameof(context));
+            if (context is null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
 
             _context = context;
-            RendererSettings = new HelperRendererSettings(_context.RendererSettings);
+            RendererSettings = _context.RendererSettings;
         }
 
         /// <summary>
@@ -25,7 +28,7 @@ namespace Stubble.Helpers
         /// <summary>
         /// Gets the renderer settings for the context
         /// </summary>
-        public HelperRendererSettings RendererSettings { get; }
+        public RendererSettings RendererSettings { get; }
 
         /// <summary>
         /// Looks up a value by name from the context

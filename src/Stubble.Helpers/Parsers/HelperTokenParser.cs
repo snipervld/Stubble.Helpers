@@ -4,14 +4,17 @@ using Stubble.Core.Exceptions;
 using Stubble.Core.Imported;
 using Stubble.Core.Parser;
 using Stubble.Core.Parser.Interfaces;
+using Stubble.Helpers.Classes;
+using Stubble.Helpers.Tokens;
+using Stubble.Helpers.Utils;
 
-namespace Stubble.Helpers
+namespace Stubble.Helpers.Parsers
 {
-    public class HelperTagParser : InlineParser
+    public class HelperTokenParser : InlineParser
     {
         private readonly ImmutableDictionary<string, HelperRef> _helperMap;
 
-        public HelperTagParser(ImmutableDictionary<string, HelperRef> helperMap)
+        public HelperTokenParser(ImmutableDictionary<string, HelperRef> helperMap)
         {
             _helperMap = helperMap;
         }
@@ -68,7 +71,7 @@ namespace Stubble.Helpers
                 args.TrimEnd();
                 contentEnd = args.End + 1;
 
-                argsList = ParserHelper.ParseArguments(new StringSlice(args.Text, args.Start, args.End));
+                argsList = ParserUtils.ParseArguments(new StringSlice(args.Text, args.Start, args.End));
             }
             else
             {
