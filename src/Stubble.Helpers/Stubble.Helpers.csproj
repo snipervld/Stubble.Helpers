@@ -7,11 +7,16 @@
     <PackageTags>template;mustache;text;generation;stubble</PackageTags>
     <RepositoryUrl>https://github.com/snipervld/Stubble.Helpers/</RepositoryUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/StubbleOrg/Stubble/master/assets/extension-logo-64.png</PackageIconUrl>
+    <PackageIcon>icon.png</PackageIcon>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Authors>Alex McAuliffe; Vladimir Zagray</Authors>
     <Version>2.0.0</Version>
     <PackageVersion>2.0.0</PackageVersion>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\icon.png" Pack="true" PackagePath="\"/>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.7">
