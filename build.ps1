@@ -1,4 +1,7 @@
-rm -r -fo artefacts
+if (Test-Path artefacts)
+{
+    rm -r -fo artefacts
+}
 
 dotnet test -c Release
 
