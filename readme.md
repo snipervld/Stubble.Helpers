@@ -1,4 +1,5 @@
-# Stubble Extensions - Helpers
+# Stubble Extensions - Helpers [![Nuget](https://img.shields.io/nuget/vpre/snipervld.Stubble.Helpers.svg?label=Nuget&style=flat-square)](https://www.nuget.org/packages/snipervld.Stubble.Helpers/)
+
 
 Stubble helpers is an opinionated method of registering helpers with the Stubble renderer to call certain methods with arguments while rendering your templates much like [Handlebars.js helpers](https://handlebarsjs.com/expressions.html);
 
