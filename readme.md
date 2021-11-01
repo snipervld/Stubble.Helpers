@@ -1,7 +1,7 @@
-# Stubble Extensions - Helpers [![Nuget](https://img.shields.io/nuget/vpre/snipervld.Stubble.Helpers.svg?label=Nuget&style=flat-square)](https://www.nuget.org/packages/snipervld.Stubble.Helpers/)
+# Stubble Extensions - Helpers (+ Section Helpers) [![Nuget](https://img.shields.io/nuget/vpre/snipervld.Stubble.Helpers.svg?label=Nuget&style=flat-square)](https://www.nuget.org/packages/snipervld.Stubble.Helpers/)
 
 
-Stubble helpers is an opinionated method of registering helpers with the Stubble renderer to call certain methods with arguments while rendering your templates much like [Handlebars.js helpers](https://handlebarsjs.com/expressions.html);
+Stubble helpers is an opinionated method of registering helpers with the Stubble renderer to call certain methods with arguments while rendering your templates much like [Handlebars.js helpers](https://handlebarsjs.com/guide/#custom-helpers) and [block helpers](https://handlebarsjs.com/guide/#block-helpers).
 
 To get started with helpers, include the package from nuget and register your helpers like so.
 ```csharp
@@ -73,3 +73,6 @@ The helpers will try to be as smart and convert the parameters types if you're c
 This uses the C# `Func` delegates for registering these functions and so you're limited to 15 parameters but we feel this is a pretty fair limitation and anything more and you should be preprocessing your data before rendering.
 
 There is also no async support inside your helpers for the same reasons since you should be preprocessing your data before rendering in this case.
+
+## Differences From [Stubble.Helpers](https://github.com/StubbleOrg/Stubble.Helpers)
+- Added section helpers ("block helpers" in Handlebars.js)
