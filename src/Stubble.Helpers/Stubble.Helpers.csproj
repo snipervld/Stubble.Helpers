@@ -9,13 +9,15 @@
     <RepositoryUrl>https://github.com/snipervld/Stubble.Helpers/</RepositoryUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/StubbleOrg/Stubble/master/assets/extension-logo-64.png</PackageIconUrl>
     <PackageIcon>icon.png</PackageIcon>
+    <PackageReadmeFile>readme.md</PackageReadmeFile>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Authors>Alex McAuliffe; Vladimir Zagray</Authors>
-    <Version>2.0.1</Version>
+    <Version>2.0.2</Version>
   </PropertyGroup>
 
   <ItemGroup>
     <None Include="..\..\icon.png" Pack="true" PackagePath="\" />
+    <None Include="..\..\readme.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>
