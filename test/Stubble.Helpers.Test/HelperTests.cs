@@ -393,6 +393,37 @@ namespace Stubble.Helpers.Test
         }
 
         [Fact]
+        public void ItShouldRenderSectionHelperWithInnerRegularSection()
+        {
+            var helpers = new SectionHelpersBuilder()
+                .Register("Helper", (HelperSectionContext context) => true);
+
+            var renderer = new StubbleBuilder()
+                .Configure(conf => conf.AddSectionHelpers(helpers))
+                .Build();
+
+            var result = renderer.Render("{{#Helper}}{{#Array}}{{.}}{{/Array}}{{/Helper}}", new { Array = new[] { 1, 2, 3 } });
+
+            Assert.Equal("123", result);
+        }
+
+        [Fact]
+        public void ItShouldRenderSectionHelperWithInnerRegularSectionWithInnerSectionSection()
+        {
+            var helpers = new SectionHelpersBuilder()
+                .Register("Helper", (HelperSectionContext context) => true)
+                .Register("InnerHelper", (HelperSectionContext context) => context.Lookup("."));
+
+            var renderer = new StubbleBuilder()
+                .Configure(conf => conf.AddSectionHelpers(helpers))
+                .Build();
+
+            var result = renderer.Render("{{#Helper}}{{#Array}}{{#InnerHelper}}{{.}}{{/InnerHelper}}{{/Array}}{{/Helper}}", new { Array = new[] { 1, 2, 3 } });
+
+            Assert.Equal("123", result);
+        }
+
+        [Fact]
         public void RegisteredInvertedSectionHelpersShouldBeRun()
         {
             var helpers = new SectionHelpersBuilder()

@@ -59,6 +59,9 @@ namespace Stubble.Helpers.Parsers
 
                 if (!_helperMap.TryGetValue(sectionName, out var helperRef))
                 {
+                    // it's needed to reset slice's position to start position, if there is no registered section helper with current section's name
+                    slice.Start = index;
+
                     return ParserState.Continue;
                 }
 
@@ -158,8 +161,9 @@ namespace Stubble.Helpers.Parsers
                 slice.NextChar();
             }
 
+            var index = slice.Start;
             var blockStart = slice.Start - processor.CurrentTags.StartTag.Length;
-            slice.Start = slice.Start + 1; // Skip the slash
+            slice.Start = index + 1; // Skip the slash
 
             while (slice.CurrentChar.IsWhitespace())
             {
@@ -195,7 +199,10 @@ namespace Stubble.Helpers.Parsers
                 return true;
             }
 
-            throw new StubbleException($"Cannot close Block '{sectionName}' at {blockStart}. There is already an unclosed Block '{sectionTag.SectionName}'");
+            // it's needed to reset slice's position to start position, because Stubble doesn't automatically resets it
+            slice.Start = index;
+
+            return false;
         }
     }
 }

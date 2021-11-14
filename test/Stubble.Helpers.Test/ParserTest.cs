@@ -216,6 +216,62 @@ namespace Stubble.Helpers.Test
         }
 
         [Fact]
+        public void ItParsesSectionHelperWithInnerRegularSection()
+        {
+            var parser = new InstanceMustacheParser();
+            var helpers =
+                new SectionHelpersBuilder()
+                    .Register("MyHelper", ctx => "Foo");
+            var pipeline = BuildSectionHelperPipeline(helpers);
+
+            var tokens = parser.Parse("{{#MyHelper}}{{#Array}}test{{/Array}}{{/MyHelper}}", pipeline: pipeline);
+
+            using (new AssertionScope())
+            {
+                var helperSectionToken =
+                    tokens
+                        .Children
+                        .Should().ContainSingle().Which
+                        .Should().BeOfType<HelperSectionToken>().Which;
+                helperSectionToken.Children
+                        .Should().ContainSingle().Which
+                        .Should().BeOfType<SectionToken>();
+            }
+        }
+
+        [Fact]
+        public void ItParsesSectionHelperWithInnerRegularSectionWithInnerSectionHelper()
+        {
+            var parser = new InstanceMustacheParser();
+            var helpers =
+                new SectionHelpersBuilder()
+                    .Register("MyHelper", ctx => "Foo")
+                    .Register("InnerHelper", ctx => "Foo");
+            var pipeline = BuildSectionHelperPipeline(helpers);
+
+            var tokens = parser.Parse("{{#MyHelper}}{{#Array}}{{#InnerHelper}}test{{/InnerHelper}}{{/Array}}{{/MyHelper}}", pipeline: pipeline);
+
+            using (new AssertionScope())
+            {
+                var helperSectionToken =
+                    tokens
+                        .Children
+                        .Should().ContainSingle().Which
+                        .Should().BeOfType<HelperSectionToken>().Which;
+                var innerSectionToken =
+                    helperSectionToken
+                        .Children
+                        .Should().ContainSingle().Which
+                        .Should().BeOfType<SectionToken>().Which;
+                var innerHelperSectionToken =
+                    innerSectionToken
+                        .Children
+                        .Should().ContainSingle().Which
+                        .Should().BeOfType<HelperSectionToken>().Which;
+            }
+        }
+
+        [Fact]
         public void ItParsesSectionHelpersWithArgument()
         {
             var parser = new InstanceMustacheParser();
